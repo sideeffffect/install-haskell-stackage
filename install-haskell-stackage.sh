@@ -1,9 +1,15 @@
 #!/usr/bin/bash
+#
+# Install Haskell with Stackage
+#
+# Copyright (c) 2014 Ondra Pelech
+# license GPL-3.0+
+#
+# https://github.com/sideeffffect/install-haskell-stackage
+#
 
 GHC_VER="7.8.3"
 GHC_VER_STACKAGE="78"
-
-NOW=$(date +"%Y_%m_%d__%H_%M_%S")
 
 CABAL_VER="1.20.0.3"
 GHC_TAR="ghc-${GHC_VER}-x86_64-unknown-linux-deb7.tar.xz"
@@ -14,7 +20,12 @@ STACKAGE_SOURCE="http://www.stackage.org/stackage"
 STACKAGE_ALIAS="http://www.stackage.org/alias/fpcomplete/unstable-ghc${GHC_VER_STACKAGE}"
 PREFIX=$HOME/.local
 set -e
+NOW=$(date +"%Y_%m_%d__%H_%M_%S")
 
+echo
+echo Install Haskell with Stackage, $NOW
+echo
+echo
 
 echo -e "\033[1m###  Backing up old installation...  #########################################\033[m"
 
