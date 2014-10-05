@@ -14,5 +14,9 @@ chmod +x install-haskell-stackage.sh
 ./install-haskell-stackage.sh
 ```
 
+Licensing
+------------
+Copyright (c) 2014 Ondra Pelech
+
 License GPL-3.0+
 
