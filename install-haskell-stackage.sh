@@ -167,20 +167,29 @@ echo
 echo -e "\033[1m###  Intalling cabal-install from Stackage...  ###############################\033[m"
 
 cabal install cabal-install
+
+mv $HOME/.cabal/bin/cabal $TMPDIR
+rm -rf $HOME/.cabal
+rm -rf $HOME/.ghc
+mkdir -p $HOME/.cabal/bin
+mv $TMPDIR/cabal $HOME/.cabal/bin/
+
 hash -r
+cabal info >/dev/null 2>&1
+perl -pi.bak -e 's#^remote-repo: .*$#remote-repo: 'stackage:http://www.stackage.org/stackage/${STACKAGE_SNAPSHOT_INCLUSIVE}'#' $HOME/.cabal/config
+cabal update
 echo
 
 
 echo -e "\033[1m###  Checking cabal-install from Stackage...  ################################\033[m"
 
 cabal --version
-ghc-pkg list
 echo
 
 
-echo -e "\033[1m###  Installing alex and happy  ##############################################\033[m"
+echo -e "\033[1m###  Installing packages in Haskell Platform  ################################\033[m"
 
-cabal install alex happy
+cabal install alex array async attoparsec base bytestring case-insensitive containers deepseq directory extensible-exceptions fgl filepath GLURaw GLUT happy hashable haskell2010 haskell98 hpc hscolour html HTTP HUnit mtl network old-locale old-time OpenGL OpenGLRaw parallel parsec pretty primitive process QuickCheck random regex-base regex-compat regex-posix split stm syb template-haskell text time transformers unix unordered-containers vector xhtml zlib
 echo
 
 
