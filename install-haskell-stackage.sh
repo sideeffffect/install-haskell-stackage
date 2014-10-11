@@ -13,7 +13,7 @@ GHC_VER_STACKAGE="78"
 
 CABAL_VER="1.20.0.3"
 GHC_TAR="ghc-${GHC_VER}-x86_64-unknown-linux-deb7.tar.xz"
-CABAL_TAR="cabal-install-${CABAL_VER}.tar.gz"
+CABAL_TARBALL="cabal-install-${CABAL_VER}.tar.gz"
 GHC_SOURCE="https://www.haskell.org/ghc/dist"
 CABAL_SOURCE="https://hackage.haskell.org/package"
 STACKAGE_SOURCE="http://www.stackage.org/stackage"
