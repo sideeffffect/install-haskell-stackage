@@ -19,7 +19,6 @@ CABAL_SOURCE="https://hackage.haskell.org/package"
 STACKAGE_SOURCE="http://www.stackage.org/stackage"
 STACKAGE_ALIAS="http://www.stackage.org/alias/fpcomplete/unstable-ghc${GHC_VER_STACKAGE}"
 PREFIX=$HOME/.local
-set -e
 NOW=$(date +"%Y_%m_%d__%H_%M_%S")
 
 echo
@@ -157,7 +156,7 @@ echo -e "\033[1m###  Intalling Stackage...  ####################################
 rm -rf "$HOME/.cabal"
 rm -rf "$HOME/.ghc"
 
-cabal info >/dev/null 2>&1
+cabal info > /dev/null 2>&1
 perl -pi.bak -e 's#^remote-repo: .*$#remote-repo: '"stackage:${STACKAGE_SOURCE}/${STACKAGE_SNAPSHOT_INCLUSIVE}"'#' "$HOME/.cabal/config"
 cabal update
 
@@ -175,7 +174,7 @@ mkdir -p "$HOME/.cabal/bin"
 mv $TMPDIR/cabal "$HOME/.cabal/bin/"
 
 hash -r
-cabal info >/dev/null 2>&1
+cabal info > /dev/null 2>&1
 perl -pi.bak -e 's#^remote-repo: .*$#remote-repo: '"stackage:http://www.stackage.org/stackage/${STACKAGE_SNAPSHOT_INCLUSIVE}"'#' "$HOME/.cabal/config"
 cabal update
 echo
