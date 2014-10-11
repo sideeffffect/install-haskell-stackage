@@ -102,6 +102,7 @@ echo
 echo -e "\033[1m###  Checking GHC...  ########################################################\033[m"
 
 cd
+which ghc
 ghc --version
 ghc-pkg list
 echo
@@ -127,6 +128,7 @@ echo
 echo -e "\033[1m###  Checking cabal-install...  ##############################################\033[m"
 
 cd
+which cabal
 cabal --version
 ghc-pkg list
 echo
@@ -184,6 +186,7 @@ echo
 
 echo -e "\033[1m###  Checking cabal-install from Stackage...  ################################\033[m"
 
+which cabal
 cabal --version
 echo
 
@@ -196,7 +199,9 @@ echo
 
 echo -e "\033[1m###  Final check  ############################################################\033[m"
 
+which ghc
 ghc --version
+which cabal
 cabal --version
 ghc-pkg list
 echo
