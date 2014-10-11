@@ -110,13 +110,13 @@ echo
 echo -e "\033[1m###  Installing cabal-install...  ############################################\033[m"
 
 cd $TMPDIR
-[ -e $CABAL_TARBALL ] && rm $CABAL_TARBALL
+[ -e $CABAL_TAR ] && rm $CABAL_TAR
 
 echo -e "\033[1mDownloading cabal-install\033[m"
-wget ${CABAL_SOURCE}/cabal-install-${CABAL_VER}/${CABAL_TARBALL}
+wget ${CABAL_SOURCE}/cabal-install-${CABAL_VER}/${CABAL_TAR}
 
 echo -e "\033[1mInstalling cabal-install\033[m"
-tar xf $CABAL_TARBALL
+tar xf $CABAL_TAR
 cd cabal-install-${CABAL_VER}
 ./bootstrap.sh
 
