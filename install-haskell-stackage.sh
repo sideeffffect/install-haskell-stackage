@@ -86,6 +86,7 @@ if [ "${CHECK}" != "${GHC_TAR}: OK" ]; then
   exit 1
 fi
 
+[ -e ghc-${GHC_VER} ] && rm -rf ghc-${GHC_VER}
 tar xf $GHC_TAR
 cd ghc-${GHC_VER}
 
@@ -115,6 +116,7 @@ echo -e "\033[1mDownloading cabal-install\033[m"
 wget ${CABAL_SOURCE}/cabal-install-${CABAL_VER}/${CABAL_TAR}
 
 echo -e "\033[1mInstalling cabal-install\033[m"
+[ -e cabal-install-${CABAL_VER} ] && rm -rf cabal-install-${CABAL_VER}
 tar xf $CABAL_TAR
 cd cabal-install-${CABAL_VER}
 ./bootstrap.sh
