@@ -157,8 +157,11 @@ echo
 
 echo -e "\033[1m###  Intalling Stackage...  ##################################################\033[m"
 
+mv "$HOME/.cabal/bin/cabal" $TMPDIR
 rm -rf "$HOME/.cabal"
 rm -rf "$HOME/.ghc"
+mkdir -p "$HOME/.cabal/bin"
+mv $TMPDIR/cabal "$HOME/.cabal/bin/"
 
 cabal info > /dev/null 2>&1
 perl -pi.bak -e 's#^remote-repo: .*$#remote-repo: '"stackage:${STACKAGE_SOURCE}/${STACKAGE_SNAPSHOT_INCLUSIVE}"'#' "$HOME/.cabal/config"
