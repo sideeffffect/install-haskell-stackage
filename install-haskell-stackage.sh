@@ -38,7 +38,7 @@ function backup {
 
 backup "$HOME/.ghc"
 backup "$HOME/.cabal"
-backup "$PREFIX/ghc-${GHC_VER}"
+backup "$PREFIX/lib/ghc-${GHC_VER}"
 
 echo
 
