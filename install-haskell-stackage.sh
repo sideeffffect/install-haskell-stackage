@@ -12,6 +12,7 @@ GHC_VER="7.8.3"
 GHC_VER_STACKAGE="78"
 
 CABAL_VER="1.20.0.3"
+HASKELL_PLATFORM_PACKAGES="alex array async attoparsec base bytestring case-insensitive containers deepseq directory extensible-exceptions fgl filepath GLURaw GLUT happy hashable haskell2010 haskell98 hpc hscolour html HTTP HUnit mtl network old-locale old-time OpenGL OpenGLRaw parallel parsec pretty primitive process QuickCheck random regex-base regex-compat regex-posix split stm syb template-haskell text time transformers unix unordered-containers vector xhtml zlib"
 GHC_TAR="ghc-${GHC_VER}-x86_64-unknown-linux-deb7.tar.xz"
 CABAL_TAR="cabal-install-${CABAL_VER}.tar.gz"
 GHC_SOURCE="https://www.haskell.org/ghc/dist"
@@ -21,12 +22,6 @@ STACKAGE_ALIAS="http://www.stackage.org/alias/fpcomplete/unstable-ghc${GHC_VER_S
 PREFIX=$HOME/.local
 NOW=$(date +"%Y_%m_%d__%H_%M_%S")
 
-echo
-echo "Install Haskell with Stackage, $NOW"
-echo
-echo
-
-echo -e "\033[1m###  Backing up old installation...  #########################################\033[m"
 
 function backup {
   if [ -e "$1" ]; then
@@ -35,6 +30,20 @@ function backup {
     mv "$1" "$OLD"
   fi
 }
+
+function cabal_install_insist {
+  until cabal install -j "$@"
+    do echo -e "\033[1mcabal install failed, trying again...\033[m"
+  done
+}
+
+
+echo
+echo "Install Haskell with Stackage, $NOW"
+echo
+echo
+
+echo -e "\033[1m###  Backing up old installation...  #########################################\033[m"
 
 backup "$HOME/.ghc"
 backup "$HOME/.cabal"
@@ -172,7 +181,7 @@ echo
 
 echo -e "\033[1m###  Intalling cabal-install from Stackage...  ###############################\033[m"
 
-cabal install cabal-install
+cabal_install_insist cabal-install
 
 mv "$HOME/.cabal/bin/cabal" $TMPDIR
 rm -rf "$HOME/.cabal"
@@ -196,7 +205,7 @@ echo
 
 echo -e "\033[1m###  Installing packages in Haskell Platform  ################################\033[m"
 
-cabal install alex array async attoparsec base bytestring case-insensitive containers deepseq directory extensible-exceptions fgl filepath GLURaw GLUT happy hashable haskell2010 haskell98 hpc hscolour html HTTP HUnit mtl network old-locale old-time OpenGL OpenGLRaw parallel parsec pretty primitive process QuickCheck random regex-base regex-compat regex-posix split stm syb template-haskell text time transformers unix unordered-containers vector xhtml zlib
+cabal_install_insist $HASKELL_PLATFORM_PACKAGES
 echo
 
 
