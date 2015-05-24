@@ -8,17 +8,16 @@
 # https://github.com/sideeffffect/install-haskell-stackage
 #
 
-GHC_VER="7.8.3"
-GHC_VER_STACKAGE="78"
+GHC_VER="7.8.4"
+CABAL_VER="1.22.4.0"
 
-CABAL_VER="1.20.0.3"
-HASKELL_PLATFORM_PACKAGES="alex array async attoparsec base bytestring case-insensitive containers deepseq directory extensible-exceptions fgl filepath GLURaw GLUT happy hashable haskell2010 haskell98 hpc hscolour html HTTP HUnit mtl network old-locale old-time OpenGL OpenGLRaw parallel parsec pretty primitive process QuickCheck random regex-base regex-compat regex-posix split stm syb template-haskell text time transformers unix unordered-containers vector xhtml zlib"
+HASKELL_PLATFORM_PACKAGES="alex happy" # "array async attoparsec base bytestring case-insensitive containers deepseq directory extensible-exceptions fgl filepath GLURaw GLUT hashable haskell2010 haskell98 hpc hscolour html HTTP HUnit mtl network old-locale old-time OpenGL OpenGLRaw parallel parsec pretty primitive process QuickCheck random regex-base regex-compat regex-posix split stm syb template-haskell text time transformers unix unordered-containers vector xhtml zlib"
 GHC_TAR="ghc-${GHC_VER}-x86_64-unknown-linux-deb7.tar.xz"
 CABAL_TAR="cabal-install-${CABAL_VER}.tar.gz"
 GHC_SOURCE="https://www.haskell.org/ghc/dist"
 CABAL_SOURCE="https://hackage.haskell.org/package"
-STACKAGE_SOURCE="http://www.stackage.org/stackage"
-STACKAGE_ALIAS="http://www.stackage.org/alias/fpcomplete/unstable-ghc${GHC_VER_STACKAGE}"
+STACKAGE="https://www.stackage.org"
+STACKAGE_BRANCH="lts"
 PREFIX=$HOME/.local
 NOW=$(date +"%Y_%m_%d__%H_%M_%S")
 
@@ -35,6 +34,22 @@ function cabal_install_insist {
   until cabal install -j "$@"
     do echo -e "\033[1mcabal install failed, trying again...\033[m"
   done
+}
+
+function install_stackage {
+  mv "$HOME/.cabal/bin/cabal" $TMPDIR
+  rm -rf "$HOME/.cabal"
+  rm -rf "$HOME/.ghc"
+  mkdir -p "$HOME/.cabal/bin"
+  mv $TMPDIR/cabal "$HOME/.cabal/bin/"
+  
+  hash -r
+  
+  cabal info > /dev/null 2>&1
+  wget -q -O - "${STACKAGE}/${STACKAGE_BRANCH}/cabal.config?global=true" >> $HOME/.cabal/config
+  echo
+  cabal update
+  echo
 }
 
 
@@ -93,6 +108,8 @@ if [ "${CHECK}" != "${GHC_TAR}: OK" ]; then
   echo -e "\033[1mChecksum of\033[m ${GHC_TAR} \033[1mfailed! Please run the script again.\033[m"
   mv $GHC_TAR "$GHC_TAR.$NOW"
   exit 1
+else
+  echo -e "\033[1mChecksum of\033[m ${GHC_TAR} \033[1mOK.\033[m"
 fi
 
 [ -e ghc-${GHC_VER} ] && rm -rf ghc-${GHC_VER}
@@ -143,57 +160,15 @@ ghc-pkg list
 echo
 
 
-echo -e "\033[1m###  Getting Stackage snapshots...  ##########################################\033[m"
+echo -e "\033[1m###  Bootstrapping cabal-install from Stackage...  ###########################\033[m"
 
-STACKAGE_SNAPSHOT_INCLUSIVE=$(wget -q -O - ${STACKAGE_ALIAS}-inclusive/ | tr -c '0-9a-z' '\n' | grep -E '^[0-9a-z]{40}$' | head -n1)
-STACKAGE_SNAPSHOT_EXCLUSIVE=$(wget -q -O - ${STACKAGE_ALIAS}-exclusive/ | tr -c '0-9a-z' '\n' | grep -E '^[0-9a-z]{40}$' | head -n1)
-
-if [ "$STACKAGE_SNAPSHOT_INCLUSIVE" == ""  ] ; then
-  echo "Unable to get STACKAGE_SNAPSHOT_INCLUSIVE"
-  exit 1
-fi
-if [ "$STACKAGE_SNAPSHOT_EXCLUSIVE" == ""  ] ; then
-  echo "Unable to get STACKAGE_SNAPSHOT_EXCLUSIVE"
-  exit 1
-fi
-
-echo -e "\033[1mUsing the Stackage snapshots\033[m"
-echo "Inclusive: ${STACKAGE_SOURCE}/${STACKAGE_SNAPSHOT_INCLUSIVE}"
-echo "Exclusive: ${STACKAGE_SOURCE}/${STACKAGE_SNAPSHOT_EXCLUSIVE}"
-
-echo
-
-
-echo -e "\033[1m###  Intalling Stackage...  ##################################################\033[m"
-
-mv "$HOME/.cabal/bin/cabal" $TMPDIR
-rm -rf "$HOME/.cabal"
-rm -rf "$HOME/.ghc"
-mkdir -p "$HOME/.cabal/bin"
-mv $TMPDIR/cabal "$HOME/.cabal/bin/"
-
-cabal info > /dev/null 2>&1
-perl -pi.bak -e 's#^remote-repo: .*$#remote-repo: '"stackage:${STACKAGE_SOURCE}/${STACKAGE_SNAPSHOT_INCLUSIVE}"'#' "$HOME/.cabal/config"
-cabal update
-
-echo
-
-
-echo -e "\033[1m###  Intalling cabal-install from Stackage...  ###############################\033[m"
+install_stackage
 
 cabal_install_insist cabal-install
 
-mv "$HOME/.cabal/bin/cabal" $TMPDIR
-rm -rf "$HOME/.cabal"
-rm -rf "$HOME/.ghc"
-mkdir -p "$HOME/.cabal/bin"
-mv $TMPDIR/cabal "$HOME/.cabal/bin/"
+install_stackage
 
-hash -r
-cabal info > /dev/null 2>&1
-perl -pi.bak -e 's#^remote-repo: .*$#remote-repo: '"stackage:http://www.stackage.org/stackage/${STACKAGE_SNAPSHOT_INCLUSIVE}"'#' "$HOME/.cabal/config"
-cabal update
-echo
+cabal_install_insist cabal-install
 
 
 echo -e "\033[1m###  Checking cabal-install from Stackage...  ################################\033[m"
@@ -219,3 +194,4 @@ ghc-pkg list
 echo
 
 echo -e "\033[1m###  FINISHED  ###############################################################\033[m"
+
