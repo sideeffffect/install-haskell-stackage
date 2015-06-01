@@ -11,7 +11,7 @@
 GHC_VER="7.8.4"
 CABAL_VER="1.22.4.0"
 
-HASKELL_PLATFORM_PACKAGES="alex happy" # "array async attoparsec base bytestring case-insensitive containers deepseq directory extensible-exceptions fgl filepath GLURaw GLUT hashable haskell2010 haskell98 hpc hscolour html HTTP HUnit mtl network old-locale old-time OpenGL OpenGLRaw parallel parsec pretty primitive process QuickCheck random regex-base regex-compat regex-posix split stm syb template-haskell text time transformers unix unordered-containers vector xhtml zlib"
+HASKELL_PLATFORM_PACKAGES="array async attoparsec base bytestring case-insensitive containers deepseq directory extensible-exceptions fgl filepath GLURaw GLUT hashable haskell2010 haskell98 hpc hscolour html HTTP HUnit mtl network old-locale old-time OpenGL OpenGLRaw parallel parsec pretty primitive process QuickCheck random regex-base regex-compat regex-posix split stm syb template-haskell text time transformers unix unordered-containers vector xhtml zlib"
 GHC_TAR="ghc-${GHC_VER}-x86_64-unknown-linux-deb7.tar.xz"
 CABAL_TAR="cabal-install-${CABAL_VER}.tar.gz"
 GHC_SOURCE="https://www.haskell.org/ghc/dist"
@@ -180,7 +180,9 @@ echo
 
 echo -e "\033[1m###  Installing packages in Haskell Platform  ################################\033[m"
 
-cabal_install_insist $HASKELL_PLATFORM_PACKAGES
+cabal_install_insist "alex happy"
+cabal_install_insist "cpphs gtk2hs-buildtools"
+#cabal_install_insist $HASKELL_PLATFORM_PACKAGES
 echo
 
 
