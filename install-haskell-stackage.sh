@@ -37,16 +37,16 @@ function cabal_install_insist {
 }
 
 function install_stackage {
-  mv "$HOME/.cabal/bin/cabal" $TMPDIR
+  [ -e "$HOME/.cabal/bin/cabal" ] && mv "$HOME/.cabal/bin/cabal" "$TMPDIR"
   rm -rf "$HOME/.cabal"
   rm -rf "$HOME/.ghc"
   mkdir -p "$HOME/.cabal/bin"
-  mv $TMPDIR/cabal "$HOME/.cabal/bin/"
+  [ -e "$TMPDIR/cabal" ] && mv "$TMPDIR/cabal" "$HOME/.cabal/bin/"
   
   hash -r
   
   cabal info > /dev/null 2>&1
-  curl -sf -L "${STACKAGE}/${STACKAGE_BRANCH}/cabal.config?global=true" >> $HOME/.cabal/config
+  curl -sf -L "${STACKAGE}/${STACKAGE_BRANCH}/cabal.config?global=true" >> "$HOME/.cabal/config"
   echo
   cabal update
   echo
@@ -68,7 +68,7 @@ echo
 
 echo -e "\033[1m###  Setting up environment...  ##############################################\033[m"
 
-TMPDIR=/tmp/install-haskell
+TMPDIR=/tmp/install-haskell-stackage
 mkdir -p $TMPDIR
 
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
@@ -88,9 +88,9 @@ fi
 echo
 
 
-if [ ! -e "$PREFIX/lib/ghc-${GHC_VER}" ]; then
-  
 echo -e "\033[1m###  Installing GHC...  ######################################################\033[m"
+
+if [[ "$(ghc --version)" != *"${GHC_VER}"* ]]; then
   
   cd $TMPDIR
   
@@ -125,7 +125,8 @@ echo -e "\033[1m###  Installing GHC...  ########################################
   
   echo
 else
-  echo -e "\033[1mUsing already installed GHC\033[m $PREFIX/lib/ghc-${GHC_VER}"
+  echo -e "Using already installed GHC"
+  echo
 fi
 
 
@@ -138,9 +139,9 @@ ghc-pkg list
 echo
 
 
-if [ ! -e `which cabal` ]; then
-  
 echo -e "\033[1m###  Installing cabal-install...  ############################################\033[m"
+
+if [ ! -e "$(which cabal)" ]; then
   
   cd $TMPDIR
   [ -e $CABAL_TAR ] && rm $CABAL_TAR
@@ -156,7 +157,8 @@ echo -e "\033[1m###  Installing cabal-install...  ##############################
   
   echo
 else
-  echo -e "\033[1mUsing already installed cabal-install\033[m" `which cabal`
+  echo -e "Using already installed cabal-install"
+  echo
 fi
 
 
