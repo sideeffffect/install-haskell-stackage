@@ -1,0 +1,6 @@
+language: c
+compiler: gcc
+install:
+  - sudo apt-get update  -qq
+  - sudo apt-get install -qq bash coreutils tar xz-utils make libgmp-dev gzip curl zlib1g-dev
+script: ./install-haskell-stackage.sh
