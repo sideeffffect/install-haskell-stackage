@@ -31,7 +31,7 @@ function backup {
 }
 
 function cabal_install_insist {
-  until cabal install -j "$@"
+  until cabal install "$@"
     do echo -e "\033[1mcabal install failed, trying again...\033[m"
   done
 }
