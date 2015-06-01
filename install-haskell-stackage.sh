@@ -62,7 +62,6 @@ echo -e "\033[1m###  Backing up old installation...  ###########################
 
 backup "$HOME/.ghc"
 backup "$HOME/.cabal"
-backup "$PREFIX/lib/ghc-${GHC_VER}"
 
 echo
 
@@ -89,40 +88,45 @@ fi
 echo
 
 
+if [ ! -e "$PREFIX/lib/ghc-${GHC_VER}" ]; then
+  
 echo -e "\033[1m###  Installing GHC...  ######################################################\033[m"
-
-cd $TMPDIR
-
-if [ ! -e $GHC_TAR ]; then
-  echo -e "\033[1mDownloading GHC\033[m"
-  wget "${GHC_SOURCE}/${GHC_VER}/${GHC_TAR}"
-else
-  echo -e "\033[1mUsing already downloaded GHC in \033[m${TMPDIR}"
-fi
-
-[ -e SHA256SUMS ] && rm SHA256SUMS
-wget "${GHC_SOURCE}/${GHC_VER}/SHA256SUMS"
-CHECK=$(sha256sum -c SHA256SUMS 2>&1 | grep "${GHC_TAR}: ")
-if [ "${CHECK}" != "${GHC_TAR}: OK" ]; then
+  
+  cd $TMPDIR
+  
+  if [ ! -e $GHC_TAR ]; then
+    echo -e "\033[1mDownloading GHC\033[m"
+    wget "${GHC_SOURCE}/${GHC_VER}/${GHC_TAR}"
+  else
+    echo -e "\033[1mUsing already downloaded GHC in \033[m${TMPDIR}"
+  fi
+  
+  [ -e SHA256SUMS ] && rm SHA256SUMS
+  wget "${GHC_SOURCE}/${GHC_VER}/SHA256SUMS"
+  CHECK=$(sha256sum -c SHA256SUMS 2>&1 | grep "${GHC_TAR}: ")
+  if [ "${CHECK}" != "${GHC_TAR}: OK" ]; then
+    echo
+    echo -e "\033[1mChecksum of\033[m ${GHC_TAR} \033[1mfailed! Please run the script again.\033[m"
+    mv $GHC_TAR "$GHC_TAR.$NOW"
+    exit 1
+  else
+    echo -e "\033[1mChecksum of\033[m ${GHC_TAR} \033[1mOK.\033[m"
+  fi
+  
+  [ -e ghc-${GHC_VER} ] && rm -rf ghc-${GHC_VER}
+  tar xf $GHC_TAR
+  cd ghc-${GHC_VER}
+  
+  echo -e "\033[1mConfiguring GHC\033[m"
+  ./configure --prefix="$PREFIX"
+  
+  echo -e "\033[1mInstalling GHC\033[m"
+  make install
+  
   echo
-  echo -e "\033[1mChecksum of\033[m ${GHC_TAR} \033[1mfailed! Please run the script again.\033[m"
-  mv $GHC_TAR "$GHC_TAR.$NOW"
-  exit 1
 else
-  echo -e "\033[1mChecksum of\033[m ${GHC_TAR} \033[1mOK.\033[m"
+  echo -e "\033[1mUsing already installed GHC\033[m $PREFIX/lib/ghc-${GHC_VER}"
 fi
-
-[ -e ghc-${GHC_VER} ] && rm -rf ghc-${GHC_VER}
-tar xf $GHC_TAR
-cd ghc-${GHC_VER}
-
-echo -e "\033[1mConfiguring GHC\033[m"
-./configure --prefix="$PREFIX"
-
-echo -e "\033[1mInstalling GHC\033[m"
-make install
-
-echo
 
 
 echo -e "\033[1m###  Checking GHC...  ########################################################\033[m"
@@ -134,21 +138,26 @@ ghc-pkg list
 echo
 
 
+if [ ! -e `which cabal` ]; then
+  
 echo -e "\033[1m###  Installing cabal-install...  ############################################\033[m"
-
-cd $TMPDIR
-[ -e $CABAL_TAR ] && rm $CABAL_TAR
-
-echo -e "\033[1mDownloading cabal-install\033[m"
-wget ${CABAL_SOURCE}/cabal-install-${CABAL_VER}/${CABAL_TAR}
-
-echo -e "\033[1mInstalling cabal-install\033[m"
-[ -e cabal-install-${CABAL_VER} ] && rm -rf cabal-install-${CABAL_VER}
-tar xf $CABAL_TAR
-cd cabal-install-${CABAL_VER}
-./bootstrap.sh
-
-echo
+  
+  cd $TMPDIR
+  [ -e $CABAL_TAR ] && rm $CABAL_TAR
+  
+  echo -e "\033[1mDownloading cabal-install\033[m"
+  wget ${CABAL_SOURCE}/cabal-install-${CABAL_VER}/${CABAL_TAR}
+  
+  echo -e "\033[1mInstalling cabal-install\033[m"
+  [ -e cabal-install-${CABAL_VER} ] && rm -rf cabal-install-${CABAL_VER}
+  tar xf $CABAL_TAR
+  cd cabal-install-${CABAL_VER}
+  ./bootstrap.sh
+  
+  echo
+else
+  echo -e "\033[1mUsing already installed cabal-install\033[m" `which cabal`
+fi
 
 
 echo -e "\033[1m###  Checking cabal-install...  ##############################################\033[m"
