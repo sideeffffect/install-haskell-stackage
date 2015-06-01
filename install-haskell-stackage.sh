@@ -189,8 +189,8 @@ echo
 
 echo -e "\033[1m###  Installing packages in Haskell Platform  ################################\033[m"
 
-cabal_install_insist "alex happy"
-cabal_install_insist "cpphs gtk2hs-buildtools"
+cabal_install_insist alex happy
+cabal_install_insist cpphs gtk2hs-buildtools
 #cabal_install_insist $HASKELL_PLATFORM_PACKAGES
 echo
 
