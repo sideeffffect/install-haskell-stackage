@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 #
 # Install Haskell with Stackage
 #
@@ -46,7 +46,7 @@ function install_stackage {
   hash -r
   
   cabal info > /dev/null 2>&1
-  wget -q -O - "${STACKAGE}/${STACKAGE_BRANCH}/cabal.config?global=true" >> $HOME/.cabal/config
+  curl -sf -L "${STACKAGE}/${STACKAGE_BRANCH}/cabal.config?global=true" >> $HOME/.cabal/config
   echo
   cabal update
   echo
@@ -96,13 +96,13 @@ echo -e "\033[1m###  Installing GHC...  ########################################
   
   if [ ! -e $GHC_TAR ]; then
     echo -e "\033[1mDownloading GHC\033[m"
-    wget "${GHC_SOURCE}/${GHC_VER}/${GHC_TAR}"
+    curl -L "${GHC_SOURCE}/${GHC_VER}/${GHC_TAR}"
   else
     echo -e "\033[1mUsing already downloaded GHC in \033[m${TMPDIR}"
   fi
   
   [ -e SHA256SUMS ] && rm SHA256SUMS
-  wget "${GHC_SOURCE}/${GHC_VER}/SHA256SUMS"
+  curl -L "${GHC_SOURCE}/${GHC_VER}/SHA256SUMS"
   CHECK=$(sha256sum -c SHA256SUMS 2>&1 | grep "${GHC_TAR}: ")
   if [ "${CHECK}" != "${GHC_TAR}: OK" ]; then
     echo
@@ -146,7 +146,7 @@ echo -e "\033[1m###  Installing cabal-install...  ##############################
   [ -e $CABAL_TAR ] && rm $CABAL_TAR
   
   echo -e "\033[1mDownloading cabal-install\033[m"
-  wget ${CABAL_SOURCE}/cabal-install-${CABAL_VER}/${CABAL_TAR}
+  curl -L ${CABAL_SOURCE}/cabal-install-${CABAL_VER}/${CABAL_TAR}
   
   echo -e "\033[1mInstalling cabal-install\033[m"
   [ -e cabal-install-${CABAL_VER} ] && rm -rf cabal-install-${CABAL_VER}
