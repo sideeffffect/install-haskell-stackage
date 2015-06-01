@@ -9,9 +9,7 @@ You need to install:
  * For Ubuntu `sudo aptitude install -y bash coreutils tar xz-utils make libgmp-dev gzip curl zlib1g-dev`
 
 ```
-wget https://raw.githubusercontent.com/sideeffffect/install-haskell-stackage/master/install-haskell-stackage.sh
-chmod +x install-haskell-stackage.sh
-./install-haskell-stackage.sh
+curl -L  https://raw.githubusercontent.com/sideeffffect/install-haskell-stackage/master/install-haskell-stackage.sh | bash
 ```
 
 License
