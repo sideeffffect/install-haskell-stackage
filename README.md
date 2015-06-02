@@ -1,6 +1,8 @@
 install-haskell-stackage
 ========================
 
+[![Build Status](https://travis-ci.org/sideeffffect/install-haskell-stackage.svg?branch=master)](https://travis-ci.org/sideeffffect/install-haskell-stackage)
+
 Install Haskell with Stackage
 
 You need to install:

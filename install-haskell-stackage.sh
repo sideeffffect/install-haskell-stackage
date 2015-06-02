@@ -189,7 +189,7 @@ cabal --version
 echo
 
 
-echo -e "\033[1m###  Installing packages in Haskell Platform  ################################\033[m"
+echo -e "\033[1m###  Installing some basic packages   ########################################\033[m"
 
 cabal_install_insist alex happy
 cabal_install_insist cpphs gtk2hs-buildtools
